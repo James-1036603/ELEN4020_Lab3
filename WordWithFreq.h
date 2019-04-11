@@ -3,8 +3,8 @@
 #include <string>
 struct WordWithFreq {
 	//Struct to count a word and its frequency
-	string word;
-	int frequency;
+	std::string word;
+	int frequency = 0;
 };
 
 #endif

@@ -17,11 +17,12 @@ public:
 	{
 	}
 	
-	void getWordsFromFile(string fileName = "input.txt")
+	void getWordsFromFile(std::string fileName = "input.txt")
 	{//Will read the words in a file and determine each word's frequency
-		string line;
-		ifstream inputFile(fileName);
+		std::string line;
+		std::ifstream inputFile(fileName);
 		std::vector<std::string> lines;
+        std::vector<std::string> formattedWords;
 		if(inputFile.is_open())
 		{
 			std::cout<<"Opened file successfully"<<std::endl;
@@ -30,7 +31,8 @@ public:
 				lines.push_back(line);
 			}
 			inputFile.close();
-			doFormatting(lines);
+			formattedWords = doFormatting(lines);
+            groupWords(formattedWords);
 		} else
 		{
 			throw "File not found!";
@@ -38,7 +40,7 @@ public:
 		
 	}
 private:
- vector<WordWithFreq> Word_List;
+ std::vector<WordWithFreq> Word_List;
  wordFormatter formatter;
  
  std::vector<std::string> doFormatting(const std::vector<std::string>& lines)
@@ -59,8 +61,40 @@ private:
 	 for(auto i = 0; i < result.size(); i++){
 		 std::cout<<result.at(i)<<std::endl;
 	 }
+     return result;
  }
  
+ 
+ void groupWords(const std::vector<std::string>& inWords)
+ {//Groups words together and increases their frequency
+    bool found = 0;
+    int foundPosition;
+    for(auto i = 0; i < inWords.size(); i++)
+    {//Iterate through each word
+        for(auto j = 0; j < Word_List.size(); j++)
+        {//Search each word in the word list
+            if(inWords.at(i) == Word_List.at(j).word)
+            {                
+                found = 1;
+                foundPosition = j;
+                break;
+            }
+        }
+        
+        if(found)
+        {//If the word was found, increase the frequency at that position
+            Word_List.at(foundPosition).frequency++;
+        } else{//Else, add the word to the list
+            WordWithFreq temp;
+            temp.word = inWords.at(i);
+            temp.frequency = 1;
+            Word_List.push_back(temp);
+        }
+        found = 0;
+    }
+     
+ }
+
 };
 
 #endif // WORDCOUNTER_H
