@@ -11,7 +11,7 @@ class wordCounter
 public:
 	wordCounter()
 	{
-		
+		loadStopWords();
 	}
 	~wordCounter()
 	{
@@ -41,6 +41,7 @@ public:
 	}
 private:
  std::vector<WordWithFreq> Word_List;
+ std::vector<std::string> StopWords;
  wordFormatter formatter;
  
  std::vector<std::string> doFormatting(const std::vector<std::string>& lines)
@@ -56,10 +57,6 @@ private:
 			 result.push_back(tempWords.at(i));
 			 result.at(i) = formatter.removePunctuationfromWord(result.at(i));
 		 }
-	 }
-	 
-	 for(auto i = 0; i < result.size(); i++){
-		 std::cout<<result.at(i)<<std::endl;
 	 }
      return result;
  }
@@ -81,7 +78,7 @@ private:
             }
         }
         
-        if(found)
+        if(found && !isStopWord(inWords.at(i)))
         {//If the word was found, increase the frequency at that position
             Word_List.at(foundPosition).frequency++;
         } else{//Else, add the word to the list
@@ -95,6 +92,35 @@ private:
      
  }
 
+ void loadStopWords()
+ {//Loads the stop words from file
+        std::string line;
+		std::ifstream inputFile("stopWords.txt");		
+		if(inputFile.is_open())
+		{
+			while(getline(inputFile,line))
+			{
+				StopWords.push_back(line);
+			}
+		} else
+		{
+			throw "File not found!";
+		}
+ }
+ 
+ bool isStopWord(std::string word)
+ {//Checks wheter the word is a stop word
+     bool isStopWord = 0;
+     for(auto i = 0; i < StopWords.size(); i++)
+     {
+         if(word == StopWords.at(i))
+         {
+             isStopWord = 1;
+             break;
+         }
+     }
+     return isStopWord;
+ }
 };
 
 #endif // WORDCOUNTER_H
