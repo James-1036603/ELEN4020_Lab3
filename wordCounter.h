@@ -39,6 +39,14 @@ public:
 		}
 		
 	}
+    
+    void printWordList()
+ {
+     for(auto x : Word_List)
+     {
+         std::cout<<x.word<<" "<<x.frequency<<std::endl;
+     }
+ }
 private:
  std::vector<WordWithFreq> Word_List;
  std::vector<std::string> StopWords;
@@ -65,6 +73,7 @@ private:
  void groupWords(const std::vector<std::string>& inWords)
  {//Groups words together and increases their frequency
     bool found = 0;
+    bool isAStopWord;
     int foundPosition;
     for(auto i = 0; i < inWords.size(); i++)
     {//Iterate through each word
@@ -77,11 +86,13 @@ private:
                 break;
             }
         }
+        //Check if is stop word
+        isAStopWord = isStopWord(inWords.at(i));
         
-        if(found && !isStopWord(inWords.at(i)))
+        if(found && !isAStopWord)
         {//If the word was found, increase the frequency at that position
             Word_List.at(foundPosition).frequency++;
-        } else{//Else, add the word to the list
+        } else if (!isAStopWord){//Else, add the word to the list
             WordWithFreq temp;
             temp.word = inWords.at(i);
             temp.frequency = 1;
@@ -115,12 +126,15 @@ private:
      {
          if(word == StopWords.at(i))
          {
+             std::cout<<"Found stop word:"<<word<<std::endl;
              isStopWord = 1;
              break;
          }
      }
      return isStopWord;
  }
+ 
+ 
 };
 
 #endif // WORDCOUNTER_H
