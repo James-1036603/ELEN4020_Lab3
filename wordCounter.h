@@ -56,6 +56,11 @@ public:
 		std::cout << Word_List.at(i).word << std::endl;
 	}
     }
+	
+	const std::vector<WordWithFreq> wordList()
+	{
+		return Word_List;
+	}
 
 private:
     std::vector<WordWithFreq> Word_List;
