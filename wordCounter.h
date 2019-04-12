@@ -6,6 +6,7 @@
 #include <fstream>
 #include <string>
 #include <iostream>
+#include <algorithm>
 class wordCounter
 {
 public:
@@ -33,6 +34,7 @@ public:
 			inputFile.close();
 			formattedWords = doFormatting(lines);
             groupWords(formattedWords);
+            descendingData();
 		} else
 		{
 			throw "File not found!";
@@ -47,6 +49,20 @@ public:
          std::cout<<x.word<<" "<<x.frequency<<std::endl;
      }
  }
+ 
+ 
+  void printTopKWords(int K)
+{
+    if(K > Word_List.size())
+    {
+        throw "K range is too large";
+    } else {
+        std::cout<<"Printing top "<<K<<" words:\n";
+        for(auto i = 0; i < K; i++)
+            std::cout<<Word_List.at(i).word<<std::endl;
+    }
+}
+ 
 private:
  std::vector<WordWithFreq> Word_List;
  std::vector<std::string> StopWords;
@@ -69,6 +85,7 @@ private:
      return result;
  }
  
+
  
  void groupWords(const std::vector<std::string>& inWords)
  {//Groups words together and increases their frequency
@@ -100,8 +117,11 @@ private:
         }
         found = 0;
     }
+    
      
  }
+
+
 
  void loadStopWords()
  {//Loads the stop words from file
@@ -126,7 +146,6 @@ private:
      {
          if(word == StopWords.at(i))
          {
-             std::cout<<"Found stop word:"<<word<<std::endl;
              isStopWord = 1;
              break;
          }
@@ -134,7 +153,23 @@ private:
      return isStopWord;
  }
  
- 
+void descendingData()
+{//Organises the frequency of the stop words in descending order
+    //Using bubble sort as Sort was giving errors
+    for(auto i = 0; i < Word_List.size()-1; i++)
+    {
+     for(auto j = 0; j < Word_List.size()-1; j++){   
+        if(Word_List.at(j).frequency < Word_List.at(j+1).frequency)
+        {
+            WordWithFreq temp = Word_List.at(j);
+            Word_List.at(j) = Word_List.at(j+1);
+            Word_List.at(j+1) = temp;
+        }
+        
+     }
+    }
+}
+
 };
 
 #endif // WORDCOUNTER_H
