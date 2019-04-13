@@ -1,6 +1,6 @@
 #include <iostream>
 #include <stdio.h>
-#include <wordCounter.h>
+#include "wordCounter.h"
 #include "InvertedText.h"
 using namespace std;
 
