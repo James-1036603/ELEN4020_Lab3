@@ -1,2 +1,8 @@
 
 *.project
+
+Debug/
+
+*.mk
+
+ELEN4020_Lab3\.txt
