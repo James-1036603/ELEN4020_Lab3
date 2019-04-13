@@ -19,16 +19,22 @@ public:
 	void FindWordLines(int K = 10)
 	{//Finds the first K words and their line numbers
 		std::string stringToSearch;
+		std::vector<std::string> wordInCurLine;
 		for(auto i = 0; i < K; i++)
 		{
 			stringToSearch = wordListForSearching.at(i).word;
 			for(auto j = 0; j < lines.size() ; j++)
 			{
-				if(lines.at(j).find(stringToSearch))
+				wordInCurLine = formatter.SeparateWordsBySpace(&lines.at(j));
+				for(auto x:wordInCurLine)
+				{
+					if(x == stringToSearch)
 					{
-					wordListForSearching.at(i).linesWhereAppearing.push_back(j+1);
-					std::cout<<"word found in line: "<<j+1<<std::endl;
+						wordListForSearching.at(i).linesWhereAppearing.push_back(j+1);
+					std::cout<<"word: "<<stringToSearch<<" found in line: "<<j+1<<std::endl;
 					}
+				}
+
 			}
 		}
 	}
@@ -49,10 +55,7 @@ void getLinesFromFile(std::string file = "input.txt")
 			std::string temp = formatter.removePunctuationfromWord(line);
 			lines.push_back(temp);
 	    }
-	    inputFile.close();
-		
-		for(auto x : lines)
-			std::cout<<x<<std::endl;
+	    inputFile.close();		
 	} else {
 	    throw "File not found!";
 	}
