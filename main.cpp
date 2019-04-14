@@ -9,7 +9,7 @@ int main()
 
     try {
 	wordCounter myCounter;
-	myCounter.getWordsFromFile();
+	myCounter.getWordsFromFile("File1ForLab3.txt");
 	myCounter.printWordList();
 	
 	int K = 10;
@@ -17,7 +17,7 @@ int main()
 	K = 20;
 	myCounter.printTopKWords(K);
 	
-	InvertedText invT(myCounter.wordList());
+	InvertedText invT(myCounter.wordList(), "File1ForLab3.txt");
 	invT.FindWordLines();
     } catch(const char* e) {
 	cout << e << endl;
