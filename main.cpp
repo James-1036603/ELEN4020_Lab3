@@ -12,6 +12,11 @@ int main()
 	myCounter.getWordsFromFile();
 	myCounter.printWordList();
 	
+	int K = 10;
+	myCounter.printTopKWords(K);
+	K = 20;
+	myCounter.printTopKWords(K);
+	
 	InvertedText invT(myCounter.wordList());
 	invT.FindWordLines();
     } catch(const char* e) {
