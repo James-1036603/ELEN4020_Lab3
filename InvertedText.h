@@ -7,7 +7,7 @@
 class InvertedText
 {
 public:
-	InvertedText(std::vector<WordWithFreq> inWordList, std::string file = "input.txt")
+	InvertedText(std::vector<WordWithFreq> inWordList, std::string file)
 	{//Initialises lines from text file
 	getLinesFromFile(file);
 	this->wordListForSearching = inWordList;
@@ -45,7 +45,7 @@ std::vector<WordWithFreq> wordListForSearching;
 std::vector<std::string> lines;
 wordFormatter formatter;
 
-void getLinesFromFile(std::string file = "input.txt")
+void getLinesFromFile(std::string file = "File1ForLab3.txt")
 {
 	std::string line;
 	std::ifstream inputFile(file);	

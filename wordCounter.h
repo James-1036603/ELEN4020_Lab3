@@ -18,7 +18,7 @@ public:
     {
     }
 
-    void getWordsFromFile(std::string fileName = "input.txt")
+    void getWordsFromFile(std::string fileName)
     { // Will read the words in a file and determine each word's frequency
 	std::string line;
 	std::ifstream inputFile(fileName);
