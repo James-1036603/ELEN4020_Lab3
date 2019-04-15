@@ -163,10 +163,10 @@ int main(int argc, char *argv[])
     char * fdata;
     unsigned int disp_num;
     struct stat finfo;
-    char * fname, * disp_num_str;
+    char * fname, * disp_num_str, *stopwords;
     struct timespec begin, end;
 
-    get_time (begin);
+    //get_time (begin);
 
     // Make sure a filename is specified
     if (argv[1] == NULL)
@@ -177,6 +177,8 @@ int main(int argc, char *argv[])
 
     fname = argv[1];
     disp_num_str = argv[2];
+    
+    
 
     printf("Wordcount: Running...\n");
 
@@ -208,27 +210,34 @@ int main(int argc, char *argv[])
     CHECK_ERROR((disp_num = (disp_num_str == NULL) ? 
       DEFAULT_DISP_NUM : atoi(disp_num_str)) <= 0);
 
-    get_time (end);
+    //get_time (end);
 
 #ifdef TIMING
     print_time("initialize", begin, end);
 #endif
 
     printf("Wordcount: Calling MapReduce Scheduler Wordcount\n");
-    get_time (begin);
+    //get_time (begin);
     std::vector<WordsMR::keyval> result;    
     WordsMR mapReduce(fdata, finfo.st_size, 1024*1024);
     CHECK_ERROR( mapReduce.run(result) < 0);
-    get_time (end);
+    //get_time (end);
 
 #ifdef TIMING
-    print_time("library", begin, end);
+    //print_time("library", begin, end);
 #endif
     printf("Wordcount: MapReduce Completed\n");
 
-    get_time (begin);
+    //get_time (begin);
 
-    unsigned int dn = std::min(disp_num, (unsigned int)result.size());
+    unsigned int dn = 10;
+    printf("\nWordcount: Results (TOP %d of %lu):\n", dn, result.size());
+    for (size_t i = 0; i < dn; i++)
+    {
+        printf("%15s - %lu\n", result[result.size()-1-i].key.data, result[result.size()-1-i].val);
+    }
+    
+    dn = 20;
     printf("\nWordcount: Results (TOP %d of %lu):\n", dn, result.size());
     uint64_t total = 0;
     for (size_t i = 0; i < dn; i++)
@@ -248,12 +257,12 @@ int main(int argc, char *argv[])
 #else
     free (fdata);
 #endif
-    CHECK_ERROR(close(fd) < 0);
+    //CHECK_ERROR(close(fd) < 0);
 
-    get_time (end);
+    //get_time (end);
 
 #ifdef TIMING
-    print_time("finalize", begin, end);
+    //print_time("finalize", begin, end);
 #endif
 
     return 0;
