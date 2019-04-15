@@ -29,6 +29,9 @@
 #include <fcntl.h>
 #include <string.h>
 #include <ctype.h>
+#include <fstream>
+#include <vector>
+#include <iostream>
 
 #ifdef TBB
 #include "tbb/scalable_allocator.h"
@@ -55,8 +58,7 @@ struct wc_word {
         return strcmp(data, other.data) == 0;
     }
 };
-
-
+ 
 // a hash for the word
 struct wc_word_hash
 {
@@ -71,6 +73,55 @@ struct wc_word_hash
     }
 };
 
+std::vector<std::string> StopWords;
+
+void loadStopWords()
+{ // Loads the stop words from file
+    std::string line;
+    std::ifstream inputFile("stopWords.txt");
+    if(inputFile.is_open()) {
+	    while(getline(inputFile, line)) {
+		StopWords.push_back(line);
+	    }
+	} else {
+	    throw "File not found!";
+	}
+}
+
+std::vector<wc_word> stopWordVector;
+
+void stopWords()
+{
+    std::string temp = " ";
+   
+    for(uint64_t i = 0; i < StopWords.size(); i++) 
+    {
+	wc_word word;
+	word.data = &StopWords[i][0u];
+
+	
+	for (uint64_t j = 0; j < StopWords[i].length(); j++)
+        {
+           word.data[j] = toupper(word.data[j]); 
+        }
+        
+	stopWordVector.push_back(word);
+    }
+
+}
+
+bool isStopWord(wc_word word)
+{ // Checks whether the word is a stop word
+    bool isStopWord = 0;
+	for(uint64_t i = 0; i < stopWordVector.size(); i++) {
+	    if(word == stopWordVector.at(i)) {
+	    		isStopWord = 1;
+	    break;}
+    }
+    
+    return isStopWord;
+}
+
 #ifdef MUST_USE_FIXED_HASH
 class WordsMR : public MapReduceSort<WordsMR, wc_string, wc_word, uint64_t, fixed_hash_container<wc_word, uint64_t, sum_combiner, 32768, wc_word_hash
 #else
@@ -84,6 +135,7 @@ class WordsMR : public MapReduceSort<WordsMR, wc_string, wc_word, uint64_t, hash
     char* data;
     uint64_t data_size;
     uint64_t chunk_size;
+    
     uint64_t splitter_pos;
 public:
     explicit WordsMR(char* _data, uint64_t length, uint64_t _chunk_size) :
@@ -113,8 +165,33 @@ public:
             if(i > start)
             {
                 s.data[i] = 0;
+                
+                wc_word test;
+                std::string str = "THE";
+                test.data = &str[0u];
+                
+                std::vector<wc_word> testv;
+                testv.push_back(test);
+                ;
+                std::string stro = "OF";
+                test.data = &stro[0u];
+                testv.push_back(test);
+                
                 wc_word word = { s.data+start };
-                emit_intermediate(out, word, 1);
+                
+                bool isAStopWord = 0;
+                isAStopWord = isStopWord(word);
+
+                
+                if (isAStopWord)
+                {
+                
+                }
+                
+                else
+                {
+		    emit_intermediate(out, word, 1);
+		}   
             }
         }
     }
@@ -165,6 +242,9 @@ int main(int argc, char *argv[])
     struct stat finfo;
     char * fname, * disp_num_str, *stopwords;
     struct timespec begin, end;
+    
+    loadStopWords();
+    stopWords();
 
     //get_time (begin);
 
