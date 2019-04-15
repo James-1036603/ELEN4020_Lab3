@@ -199,7 +199,7 @@ run (std::vector<keyval>& result)
 
     // Run splitter to generate chunks
     get_time (begin);
-    while (static_cast<Impl const*>(this)->split(chunk))
+    while (static_cast<Impl *>(this)->split(chunk))
     {
         data.push_back(chunk);
     }
@@ -289,7 +289,7 @@ run_map (data_type* data, uint64_t count)
         }
     }
 
-    start_workers (&map_callback, std::min(num_map_tasks, num_threads), "map"); 
+    this->start_workers (&map_callback, std::min(num_map_tasks, num_threads), "map"); 
 }
 
 /**
@@ -328,7 +328,7 @@ void MapReduce<Impl, D, K, V, Container>::run_reduce ()
         this->taskQueue->enqueue_seq(task, this->num_reduce_tasks);
     }
 
-    start_workers (&reduce_callback, 
+    this->start_workers (&reduce_callback, 
         std::min(this->num_reduce_tasks, num_threads), "reduce");
 }
 
@@ -475,7 +475,7 @@ protected:
                 { i, 0, (uint64_t)&this->final_vals[i], 0 };
             this->taskQueue->enqueue_seq(task, merge_queues);
         }
-        start_workers(&this->merge_callback, this->num_threads, "merge");
+        this->start_workers(&this->merge_callback, this->num_threads, "merge");
 
         // Then merge
         std::vector<keyval>* merge_vals;
@@ -506,7 +506,7 @@ protected:
             }
 
             // Run merge tasks and get merge values.
-            start_workers (&this->merge_callback, 
+            this->start_workers (&this->merge_callback, 
                 std::min(resulting_queues, this->num_threads), "merge");
 
             delete [] merge_vals;

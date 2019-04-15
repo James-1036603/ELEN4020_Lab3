@@ -27,7 +27,7 @@
 #ifndef PROCESSOR_H_
 #define PROCESSOR_H_
 
-#ifdef _LINUX_
+#ifdef __linux__
 #ifndef _GNU_SOURCE
 #define _GNU_SOURCE
 #endif
