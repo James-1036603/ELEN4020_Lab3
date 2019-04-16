@@ -94,7 +94,7 @@ void loadStopWords()
 std::vector<wc_word> stopWordVector;
 
 void stopWords()
-{
+{// Convert strings to wc_word types
     std::string temp = " ";
    
     for(uint64_t i = 0; i < StopWords.size(); i++) 
@@ -238,8 +238,6 @@ int main(int argc, char *argv[])
     loadStopWords();
     stopWords();
 
-    //get_time (begin);
-
     // Make sure a filename is specified
     if (argv[1] == NULL)
     {
@@ -282,11 +280,6 @@ int main(int argc, char *argv[])
     CHECK_ERROR((disp_num = (disp_num_str == NULL) ? 
       DEFAULT_DISP_NUM : atoi(disp_num_str)) <= 0);
 
-    //get_time (end);
-
-#ifdef TIMING
-    print_time("initialize", begin, end);
-#endif
 
     printf("Wordcount: Calling MapReduce Scheduler Wordcount\n");
     
@@ -303,7 +296,7 @@ int main(int argc, char *argv[])
 
     printf("Wordcount: MapReduce Completed\n");
 
-
+    //Determing top 10 most occuring words
     unsigned int dn = 10;
     printf("\nWordcount: Results (TOP %d of %lu):\n", dn, result.size());
     
@@ -318,6 +311,7 @@ int main(int argc, char *argv[])
     std::cout << "Time taken to determine top 10 most occuring words:" << std::fixed << time_taken << std::setprecision(10);
     std::cout << " sec"<< std::endl;
     
+    //Determine top 20 most occuring words
     dn = 20;
     printf("\nWordcount: Results (TOP %d of %lu):\n", dn, result.size());
     uint64_t total = 0;
@@ -347,13 +341,8 @@ int main(int argc, char *argv[])
 #else
     free (fdata);
 #endif
-    //CHECK_ERROR(close(fd) < 0);
+    CHECK_ERROR(close(fd) < 0);
 
-    //get_time (end);
-
-#ifdef TIMING
-    //print_time("finalize", begin, end);
-#endif
 
     return 0;
 }
